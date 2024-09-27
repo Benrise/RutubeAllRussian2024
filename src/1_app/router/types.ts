@@ -9,7 +9,9 @@ declare module 'vue-router' {
   }
 }
 
-export enum AppPages {
+export const enum AppPages {
   home = 'HomePage',
   login = 'LoginPage',
+  projects = 'ProjectsPage',
+  workspaces = 'WorkspacesPage',
 }
