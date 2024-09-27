@@ -1,11 +1,11 @@
 <template>
-    <div>
-        Вход
-    </div>
-  </template>
+    <PageBuilder>
+        <div>Login</div>
+    </PageBuilder>
+</template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import PageBuilder from '@/6_shared/ui/page-builder/PageBuilder.vue';
+</script>
 
-<style scoped lang="scss">
-@import './styles';
-</style>
+<style scoped lang="scss"></style>
