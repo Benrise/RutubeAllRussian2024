@@ -38,7 +38,7 @@
                                   v-else
                                   :size="sentence.description.length"  
                                   :default-value="sentence.description" 
-                                  @update="(newValue) => updateSentence(sentence.start_time, newValue)" 
+                                  v-model:model-value="sentence.description"
                                 />
                               </span>
                         </div>
@@ -95,10 +95,16 @@
 </template>
 
 <script lang="ts" setup>
-import IconSlash from '~icons/lucide/slash?width=48px&height=48px';
-import IconDislike from '~icons/heroicons/hand-thumb-down';
-import IconLike from '~icons/heroicons/hand-thumb-up';
-import IconInfo from '~icons/lucide/info?width=16px&height=16px';
+import { ref, watch, type Ref } from 'vue';
+import { onClickOutside } from '@vueuse/core';
+
+import { AppPages } from '@/1_app/router';
+
+import { Button } from '@/6_shared/ui/button';
+import { Badge } from '@/6_shared/ui/badge';
+import Input from '@/6_shared/ui/input/Input.vue';
+
+import PageBuilder from '@/6_shared/ui/page-builder/PageBuilder.vue';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -106,21 +112,21 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/6_shared/ui/breadcrumb';
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from '@/6_shared/ui/tooltip'
-import { Badge } from '@/6_shared/ui/badge';
-import PageBuilder from '@/6_shared/ui/page-builder/PageBuilder.vue';
-import { AppPages } from '@/1_app/router';
-import { Button } from '@/6_shared/ui/button';
-import { ref, watch } from 'vue';
+} from '@/6_shared/ui/tooltip';
+
 import { ClipCard } from '@/5_entities/clip/ui/card';
 import { getProjectData } from '@/5_entities/project/api/data';
-import Input from '@/6_shared/ui/input/Input.vue';
-import { onClickOutside } from '@vueuse/core'
+
+import IconSlash from '~icons/lucide/slash?width=48px&height=48px';
+import IconDislike from '~icons/heroicons/hand-thumb-down';
+import IconLike from '~icons/heroicons/hand-thumb-up';
+import IconInfo from '~icons/lucide/info?width=16px&height=16px';
 
 const mockProject  = {
     id: 1,
@@ -326,42 +332,27 @@ const mockProject  = {
         },
     ]
 }
-const videoRef = ref(null);
+const videoRef = ref<HTMLVideoElement>();
+const selectedClipIndex = ref(0);
+const previousHighlightedSentence = ref(null);
 const localClips = ref(mockProject.clips.map(clip => ({
     ...clip,
     transcript: clip.transcript.map(sentence => ({ ...sentence, isEditing: false, isActive: false })),
     ref: null,
 })));
-const selectedClipIndex = ref(0);
-const selectedClip = ref(mockProject.clips[0])
+const selectedClip = ref(mockProject.clips[0]);
+
 const selectClip = (clip, index: number) => {
     selectedClipIndex.value = index;
 };
-
-watch(selectedClipIndex, (newIndex) => {
-    selectedClip.value = localClips.value[newIndex];
-});
-
 const onSentenceClick = (sentence) => {
-    if (sentence.start_time > selectedClip.value.duration) {
-        return;
-    }
+    if (sentence.start_time > selectedClip.value.duration) return;
 
     if (!sentence.isEditing) {
         sentence.isEditing = true;
         if (videoRef.value) {
             videoRef.value.currentTime = sentence.start_time;
         }
-    }
-};
-
-
-
-const updateSentence = (startTime: number, newValue: string) => {
-    const sentenceToUpdate = localClips.value[selectedClipIndex.value].transcript.find(s => s.start_time === startTime);
-    if (sentenceToUpdate) {
-        sentenceToUpdate.description = newValue;
-        sentenceToUpdate.isEditing = false;
     }
 };
 const setSentenceRef = (el: any, index: number) => {
@@ -374,40 +365,37 @@ const setSentenceRef = (el: any, index: number) => {
         });
     }
 };
-const previousHighlightedSentence = ref(null);
-
 const handleTimeUpdate = () => {
     const currentTime = videoRef.value?.currentTime || 0;
 
     localClips.value[selectedClipIndex.value].transcript.forEach((sentence) => {
-        // Если время вышло за пределы предложения, сбрасываем активность
         if (currentTime < sentence.start_time || currentTime > sentence.end_time) {
             sentence.isActive = false;
         } else {
-            // Если предложение активно и не совпадает с предыдущим, активируем его
             if (previousHighlightedSentence.value !== sentence) {
-                // Если у нас есть предыдущее предложение, сбрасываем его
                 if (previousHighlightedSentence.value) {
                     previousHighlightedSentence.value.isActive = false;
                 }
-                
-                sentence.isActive = true; // Устанавливаем активным текущее предложение
-                previousHighlightedSentence.value = sentence; // Запоминаем текущее предложение как предыдущее
+                sentence.isActive = true;
+                previousHighlightedSentence.value = sentence;
             }
         }
     });
 
-    // Если нет активных предложений, сбрасываем предыдущее
     if (localClips.value[selectedClipIndex.value].transcript.every(sentence => !sentence.isActive)) {
         previousHighlightedSentence.value = null;
     }
 };
+
+watch(selectedClipIndex, (newIndex) => {
+    selectedClip.value = localClips.value[newIndex];
+});
 watch(videoRef, (newVideoRef) => {
     if (newVideoRef) {
         newVideoRef.addEventListener('timeupdate', handleTimeUpdate);
     }
 });
-console.log()
+
 getProjectData()
 </script>
 
