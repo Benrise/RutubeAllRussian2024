@@ -9,14 +9,17 @@
 html, body {
     height: 100%;
     scroll-behavior: smooth;
+    overflow: hidden;
 }
 
 [class*="Container"] {
     max-width: 1584px;
     margin: 0 auto;
-    @include adaptiveValue('padding', 24, 16);
+    @include adaptiveValue('padding-inline', 24, 16);
     @media screen and (max-width: 1536px) {
         max-width: 1328px;
     }
     @include adaptiveValue('padding-top', 48, 24);
+    max-height: calc(100vh - 96px);
+    overflow: hidden;
   }
