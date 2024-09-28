@@ -106,6 +106,7 @@ import { AppPages } from '@/1_app/router';
 import { Button } from '@/6_shared/ui/button';
 import { ref } from 'vue';
 import { ClipCard } from '@/5_entities/clip/ui/card';
+import { getProjectData } from '@/5_entities/project/api/data';
 
 const mockProject  = {
     id: 1,
@@ -315,6 +316,8 @@ const selectedClip = ref(mockProject.clips[0])
 const selectClip = (clip: any) => {
   selectedClip.value = clip;
 };
+
+getProjectData()
 </script>
 
 <style lang="scss" module>
