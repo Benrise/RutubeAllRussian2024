@@ -3,7 +3,7 @@
         <div v-if="index" :class="$style.cardIndex">
             {{ index }}
         </div>
-        <div :class="$style.cardBody">
+        <div :class="[$style.cardBody, isActive && $style.cardActive]">
             <div :class="$style.cardImageWrapper">
                 <img :class="$style.cardImage" :src="clip.preview"/>
             </div>
@@ -32,6 +32,11 @@ const props = defineProps({
     },
     clip: {
         type: Object,
+        required: true
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
     }
 });
 </script>
@@ -40,6 +45,15 @@ const props = defineProps({
 .card {
     display: flex;
     gap: 16px;
+    border: 2px solid transparent;
+
+    &:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+}
+.cardActive {
+    outline: 2px solid hsl(var(--primary));
 }
 .cardIndex {
     @include h2();

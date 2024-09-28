@@ -65,6 +65,7 @@ import { Upload } from '@/4_features/upload';
     justify-content: space-between;
     width: 100%;
     height: 100%;
+    gap: 64px;
     padding: 0 64px;
 }
 .main {

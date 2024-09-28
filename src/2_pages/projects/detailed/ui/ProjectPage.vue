@@ -35,7 +35,7 @@
                 <div :class="$style.mainClip">
                     <div :class="$style.mainClipBody">
                         <div :class="$style.clipWrapper">
-                            <video :class="$style.clip" src="/video/promo-viral.mp4"/>
+                            <video :class="$style.clip" :src="selectedClip.src" controls/>
                             <div :class="$style.viralInfo">
                                 <TooltipProvider>
                                     <Tooltip>
@@ -51,9 +51,6 @@
                                     </Tooltip>
                                   </TooltipProvider>
                             </div>
-                        </div>
-                        <div :class="$style.clipTimeline">
-
                         </div>
                     </div>
                     <div :class="$style.mainClipFooter">
@@ -75,6 +72,8 @@
                             :key="clip.id"
                             :clip="clip"
                             :index="index + 1"
+                            @click="selectClip(clip)"
+                            :is-active="selectedClip.id === clip.id"
                         />
                     </div>
                 </div>
@@ -181,12 +180,12 @@ const mockProject  = {
             ]
         },
         {
-            id: 1,
+            id: 2,
             src: '/video/promo-viral.mp4',
             preview: '/images/png/clip-card-image-mock.png',
             title: 'Короткая тема',
             duration: '14:48',
-            score: 9.0,
+            score: 8.5,
             score_description: 'В клипе много движений',
             transcript: [
                 {
@@ -246,12 +245,12 @@ const mockProject  = {
             ]
         },
         {
-            id: 1,
-            src: '/video/promo-viral.mp4',
+            id: 3,
+            src: '#',
             preview: '/images/png/clip-card-image-mock.png',
             title: 'Короткая тема',
             duration: '14:48',
-            score: 9.0,
+            score: 8.0,
             score_description: 'В клипе много движений',
             transcript: [
                 {
@@ -310,528 +309,12 @@ const mockProject  = {
                 }
             ]
         },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },{
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        },
-        {
-            id: 1,
-            src: '/video/promo-viral.mp4',
-            preview: '/images/png/clip-card-image-mock.png',
-            title: 'Короткая тема',
-            duration: '14:48',
-            score: 9.0,
-            score_description: 'В клипе много движений',
-            transcript: [
-                {
-                    start_time: 29.56,
-                    end_time: 32.0,
-                    description: 'Здорово. Короче, смотри такая тема.',
-                    duration: 2.44
-                },
-                {
-                    start_time: 32.0,
-                    end_time: 34.0,
-                    description: 'Мы берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 34.0,
-                    end_time: 36.0,
-                    description: 'Не, не, не, подожди, короче, смотри.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 36.0,
-                    end_time: 38.0,
-                    description: 'Ну берем тачку, да?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 38.0,
-                    end_time: 40.0,
-                    description: 'И что дальше? Куда поедем?',
-                    duration: 2.0
-                },
-                {
-                    start_time: 40.0,
-                    end_time: 42.5,
-                    description: 'Думаю, поедем за город, там меньше машин.',
-                    duration: 2.5
-                },
-                {
-                    start_time: 42.5,
-                    end_time: 44.0,
-                    description: 'Ну хорошо, поехали. Я готов!',
-                    duration: 1.5
-                },
-                {
-                    start_time: 44.0,
-                    end_time: 46.0,
-                    description: 'Отлично, тогда стартуем прямо сейчас.',
-                    duration: 2.0
-                },
-                {
-                    start_time: 46.0,
-                    end_time: 48.0,
-                    description: 'Погнали! Дорога ждёт нас.',
-                    duration: 2.0
-                }
-            ]
-        }
     ]
 }
 const selectedClip = ref(mockProject.clips[0])
+const selectClip = (clip: any) => {
+  selectedClip.value = clip;
+};
 </script>
 
 <style lang="scss" module>
@@ -850,6 +333,7 @@ const selectedClip = ref(mockProject.clips[0])
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 64px;
 }
 .mainTranscript {
     display: flex;
@@ -899,6 +383,7 @@ const selectedClip = ref(mockProject.clips[0])
     overflow: hidden;
     outline: 4px solid hsl(var(--primary));
     position: relative;
+    height: 100%;
 }
 .viralInfo {
     position: absolute;
@@ -914,5 +399,11 @@ const selectedClip = ref(mockProject.clips[0])
     padding: 8px 12px;
     color: hsl(var(--white));
     border-radius: 999px;
+}
+.clip {
+    height: 100%;
+}
+.mainClipBody {
+    height: 100%;
 }
 </style>
