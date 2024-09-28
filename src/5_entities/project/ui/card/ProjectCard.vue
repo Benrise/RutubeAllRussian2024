@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div :class="$style.cardActions">
-                <Button>Подробнее</Button>
+                <Button variant="secondary">Подробнее</Button>
             </div>
         </div>
     </div>
