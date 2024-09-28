@@ -28,7 +28,7 @@
                     </div>
                     <div :class="$style.mainTranscriptContent">
                         <div v-for="(sentence, index) in localClips[selectedClipIndex].transcript" 
-                            :class="$style.mainTranscriptSentence" 
+                            :class="[$style.mainTranscriptSentence, { [$style.active]: sentence.isActive }]" 
                             :ref="(el) => setSentenceRef(el, index)"
                         >
                             <Badge variant="secondary">{{ sentence.start_time + ' с' }}</Badge>
@@ -329,7 +329,7 @@ const mockProject  = {
 const videoRef = ref(null);
 const localClips = ref(mockProject.clips.map(clip => ({
     ...clip,
-    transcript: clip.transcript.map(sentence => ({ ...sentence, isEditing: false })),
+    transcript: clip.transcript.map(sentence => ({ ...sentence, isEditing: false, isActive: false })),
     ref: null,
 })));
 const selectedClipIndex = ref(0);
@@ -374,6 +374,39 @@ const setSentenceRef = (el: any, index: number) => {
         });
     }
 };
+const previousHighlightedSentence = ref(null);
+
+const handleTimeUpdate = () => {
+    const currentTime = videoRef.value?.currentTime || 0;
+
+    localClips.value[selectedClipIndex.value].transcript.forEach((sentence) => {
+        // Если время вышло за пределы предложения, сбрасываем активность
+        if (currentTime < sentence.start_time || currentTime > sentence.end_time) {
+            sentence.isActive = false;
+        } else {
+            // Если предложение активно и не совпадает с предыдущим, активируем его
+            if (previousHighlightedSentence.value !== sentence) {
+                // Если у нас есть предыдущее предложение, сбрасываем его
+                if (previousHighlightedSentence.value) {
+                    previousHighlightedSentence.value.isActive = false;
+                }
+                
+                sentence.isActive = true; // Устанавливаем активным текущее предложение
+                previousHighlightedSentence.value = sentence; // Запоминаем текущее предложение как предыдущее
+            }
+        }
+    });
+
+    // Если нет активных предложений, сбрасываем предыдущее
+    if (localClips.value[selectedClipIndex.value].transcript.every(sentence => !sentence.isActive)) {
+        previousHighlightedSentence.value = null;
+    }
+};
+watch(videoRef, (newVideoRef) => {
+    if (newVideoRef) {
+        newVideoRef.addEventListener('timeupdate', handleTimeUpdate);
+    }
+});
 console.log()
 getProjectData()
 </script>
@@ -478,5 +511,8 @@ getProjectData()
     display: flex;
     text-wrap: nowrap;
     gap: 8px;
+}
+.active {
+    color: hsl(var(--primary));
 }
 </style>
