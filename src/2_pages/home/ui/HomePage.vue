@@ -38,7 +38,9 @@
                     </div>
                 </div>
                 <div :class="$style.mainActions">
-                    <Button variant="default"> Загрузить файл </Button>
+                    <Upload>
+                        <Button variant="default"> Загрузить файл </Button>
+                    </Upload>
                     <a href="#" :class="$style.helpLink">Как это работает?</a>
                 </div>
             </div>
@@ -53,6 +55,7 @@ import IconMagic from '~icons/prime/sparkles?width=24px&height=24px';
 import IconArrow from '~icons/lets-icons/arrow-right-long-light?width=48px&height=48px';
 import { RecentList } from '@/3_widgets/recent/ui/list';
 import { Button } from '@/6_shared/ui/button';
+import { Upload } from '@/4_features/upload';
 </script>
 
 <style lang="scss" module>
