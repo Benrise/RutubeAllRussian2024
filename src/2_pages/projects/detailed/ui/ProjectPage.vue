@@ -24,18 +24,30 @@
             <div :class="$style.main">
                 <div :class="$style.mainTranscript">
                     <div :class="$style.mainTitle">
-                        Транскрипция
+                        Транскрипция предложений
                     </div>
                     <div :class="$style.mainTranscriptContent">
-                        <div v-for="sentence in selectedClip.transcript" :class="$style.mainTranscriptSentences">
-                            {{ sentence.description }}
+                        <div v-for="(sentence, index) in localClips[selectedClipIndex].transcript" 
+                            :class="$style.mainTranscriptSentence" 
+                            :ref="(el) => setSentenceRef(el, index)"
+                        >
+                            <Badge variant="secondary">{{ sentence.start_time + ' с' }}</Badge>
+                            <span @click="onSentenceClick(sentence)">
+                                <span v-if="!sentence.isEditing">{{ sentence.description }}</span>
+                                <Input 
+                                  v-else
+                                  :size="sentence.description.length"  
+                                  :default-value="sentence.description" 
+                                  @update="(newValue) => updateSentence(sentence.start_time, newValue)" 
+                                />
+                              </span>
                         </div>
                     </div>
                 </div>
                 <div :class="$style.mainClip">
                     <div :class="$style.mainClipBody">
                         <div :class="$style.clipWrapper">
-                            <video :class="$style.clip" :src="selectedClip.src" controls/>
+                            <video ref="videoRef" :class="$style.clip" :src="selectedClip.src" controls/>
                             <div :class="$style.viralInfo">
                                 <TooltipProvider>
                                     <Tooltip>
@@ -64,15 +76,15 @@
                 </div>
                 <div :class="$style.mainClips">
                     <div :class="$style.mainTitle">
-                        Транскрипция
+                        Сгенерированные клипы
                     </div>
                     <div :class="$style.mainClipsList">
                         <ClipCard 
-                            v-for="(clip, index) in mockProject.clips" 
+                            v-for="(clip, index) in localClips" 
                             :key="clip.id"
                             :clip="clip"
                             :index="index + 1"
-                            @click="selectClip(clip)"
+                            @click="selectClip(clip, index)"
                             :is-active="selectedClip.id === clip.id"
                         />
                     </div>
@@ -104,9 +116,11 @@ import { Badge } from '@/6_shared/ui/badge';
 import PageBuilder from '@/6_shared/ui/page-builder/PageBuilder.vue';
 import { AppPages } from '@/1_app/router';
 import { Button } from '@/6_shared/ui/button';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { ClipCard } from '@/5_entities/clip/ui/card';
 import { getProjectData } from '@/5_entities/project/api/data';
+import Input from '@/6_shared/ui/input/Input.vue';
+import { onClickOutside } from '@vueuse/core'
 
 const mockProject  = {
     id: 1,
@@ -125,56 +139,56 @@ const mockProject  = {
             score_description: 'Высокая виральность характеризуется многочисленными движениями и эмоциями',
             transcript: [
                 {
-                    start_time: 29.56,
+                    start_time: 1,
                     end_time: 32.0,
                     description: 'Здорово. Короче, смотри такая тема.',
                     duration: 2.44
                 },
                 {
-                    start_time: 32.0,
+                    start_time: 3,
                     end_time: 34.0,
                     description: 'Мы берем тачку, да?',
                     duration: 2.0
                 },
                 {
-                    start_time: 34.0,
+                    start_time: 7,
                     end_time: 36.0,
                     description: 'Не, не, не, подожди, короче, смотри.',
                     duration: 2.0
                 },
                 {
-                    start_time: 36.0,
+                    start_time: 9,
                     end_time: 38.0,
                     description: 'Ну берем тачку, да?',
                     duration: 2.0
                 },
                 {
-                    start_time: 38.0,
+                    start_time: 12,
                     end_time: 40.0,
                     description: 'И что дальше? Куда поедем?',
                     duration: 2.0
                 },
                 {
-                    start_time: 40.0,
+                    start_time: 15,
                     end_time: 42.5,
                     description: 'Думаю, поедем за город, там меньше машин.',
                     duration: 2.5
                 },
                 {
-                    start_time: 42.5,
+                    start_time: 17,
                     end_time: 44.0,
                     description: 'Ну хорошо, поехали. Я готов!',
                     duration: 1.5
                 },
                 {
-                    start_time: 44.0,
+                    start_time: 20,
                     end_time: 46.0,
                     description: 'Отлично, тогда стартуем прямо сейчас.',
                     duration: 2.0
                 },
                 {
-                    start_time: 46.0,
-                    end_time: 48.0,
+                    start_time: 22,
+                    end_time: 24,
                     description: 'Погнали! Дорога ждёт нас.',
                     duration: 2.0
                 }
@@ -312,11 +326,55 @@ const mockProject  = {
         },
     ]
 }
+const videoRef = ref(null);
+const localClips = ref(mockProject.clips.map(clip => ({
+    ...clip,
+    transcript: clip.transcript.map(sentence => ({ ...sentence, isEditing: false })),
+    ref: null,
+})));
+const selectedClipIndex = ref(0);
 const selectedClip = ref(mockProject.clips[0])
-const selectClip = (clip: any) => {
-  selectedClip.value = clip;
+const selectClip = (clip, index: number) => {
+    selectedClipIndex.value = index;
 };
 
+watch(selectedClipIndex, (newIndex) => {
+    selectedClip.value = localClips.value[newIndex];
+});
+
+const onSentenceClick = (sentence) => {
+    if (sentence.start_time > selectedClip.value.duration) {
+        return;
+    }
+
+    if (!sentence.isEditing) {
+        sentence.isEditing = true;
+        if (videoRef.value) {
+            videoRef.value.currentTime = sentence.start_time;
+        }
+    }
+};
+
+
+
+const updateSentence = (startTime: number, newValue: string) => {
+    const sentenceToUpdate = localClips.value[selectedClipIndex.value].transcript.find(s => s.start_time === startTime);
+    if (sentenceToUpdate) {
+        sentenceToUpdate.description = newValue;
+        sentenceToUpdate.isEditing = false;
+    }
+};
+const setSentenceRef = (el: any, index: number) => {
+    if (el && localClips.value[selectedClipIndex.value].transcript[index]) {
+        onClickOutside(el, () => {
+            const sentence = localClips.value[selectedClipIndex.value].transcript[index];
+            if (sentence.isEditing) {
+                sentence.isEditing = false;
+            }
+        });
+    }
+};
+console.log()
 getProjectData()
 </script>
 
@@ -342,7 +400,8 @@ getProjectData()
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 100%
+    height: 100%;
+    max-width: 400px;
 }
 .mainTitle {
     @include h2();
@@ -408,5 +467,16 @@ getProjectData()
 }
 .mainClipBody {
     height: 100%;
+}
+.mainTranscriptContent {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.mainTranscriptSentence {
+    width: fit-content;
+    display: flex;
+    text-wrap: nowrap;
+    gap: 8px;
 }
 </style>
