@@ -1,10 +1,10 @@
 <template>
-    <div :class="$style.recent">
-        <div :class="$style.recentHeader">
+    <div :class="$style.project">
+        <div :class="$style.projectHeader">
             Недавние проекты
         </div>
-        <div :class="$style.recentList">
-            <ProjectCard :variant="'recent'" v-for="i in 20" :key="i"/>
+        <div :class="$style.projectList">
+            <ProjectCard :variant="'default'" v-for="i in 20" :key="i"/>
         </div>
     </div>
 </template>
@@ -14,25 +14,25 @@ import { ProjectCard } from '@/5_entities/project/ui/card';
 </script>
 
 <style lang="scss" module>
-.recent {
+.project {
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 100%;
-    max-width: 534px;
     
     ::-webkit-scrollbar {
         display: none;
     }
 }
-.recentHeader {
+.projectHeader {
     @include h2();
 }
-.recentList {
+.projectList {
     max-height: 100vh;
     overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
+    width: 100%;
 }
 </style>
