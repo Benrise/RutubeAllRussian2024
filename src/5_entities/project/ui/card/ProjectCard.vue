@@ -1,29 +1,32 @@
 <template>
-    <div :class="$style.card">
-        <div :class="$style.cardImage">
-            <img src="/images/png/project-card-image-mock.png" alt="logo" />
-            <div :class="$style.cardDuration">
-                14:48
-            </div>
-        </div>
-        <div :class="$style.cardBody">
-            <div :class="$style.cardHeader">
-                <div :class="$style.cardDate">
-                    Сентябрь 27, 2024 22:06
-                </div>
-                <div :class="$style.cardName">
-                    2024-09-27 22.05.18
+    <router-link :to="{ name: AppPages.project, params: { projectId: 1 } }">
+        <div :class="$style.card">
+            <div :class="$style.cardImage">
+                <img src="/images/png/project-card-image-mock.png" alt="logo" />
+                <div :class="$style.duration">
+                    14:48
                 </div>
             </div>
-            <div :class="$style.cardActions">
-                <Button variant="secondary">Подробнее</Button>
+            <div :class="$style.cardBody">
+                <div :class="$style.cardHeader">
+                    <div :class="$style.cardDate">
+                        Сентябрь 27, 2024 22:06
+                    </div>
+                    <div :class="$style.cardName">
+                        2024-09-27 22.05.18
+                    </div>
+                </div>
+                <div :class="$style.cardActions">
+                    <Button variant="secondary">Подробнее</Button>
+                </div>
             </div>
         </div>
-    </div>
+    </router-link>
 </template>
 
 <script setup lang="ts">
 import { Button } from '@/6_shared/ui/button';
+import { AppPages } from '@/1_app/router';
 </script>
 
 <style lang="scss" module>
@@ -48,7 +51,7 @@ import { Button } from '@/6_shared/ui/button';
         height: 100%;
     }
 }
-.cardDuration {
+.duration {
     position: absolute;
     bottom: 8px;
     right: 8px;

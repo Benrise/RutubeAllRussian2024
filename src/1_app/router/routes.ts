@@ -27,7 +27,16 @@ const routes: Array<RouteRecordRaw> = [
     {
         name: AppPages.projects,
         path: '/projects',
-        component: () => import('@/2_pages/projects'),
+        component: () => import('@/2_pages/projects/listing'),
+        meta: {
+            layout: AppLayoutsEnum.default,
+            authRequired: true,
+        },
+    },
+    {
+        name: AppPages.project,
+        path: '/projects/:projectId',
+        component: () => import('@/2_pages/projects/detailed'),
         meta: {
             layout: AppLayoutsEnum.default,
             authRequired: true,

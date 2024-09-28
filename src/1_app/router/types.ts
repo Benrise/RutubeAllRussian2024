@@ -13,5 +13,6 @@ export const enum AppPages {
   home = 'HomePage',
   login = 'LoginPage',
   projects = 'ProjectsPage',
+  project = 'ProjectPage',
   workspaces = 'WorkspacesPage',
 }

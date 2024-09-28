@@ -2,7 +2,7 @@
     <div :class="$style.header">
         <div :class="$style.headerContainer">
             <div :class="$style.headerLeft">
-                <router-link :to="AppPages.home" :class="$style.headerLogo">
+                <router-link :to="{ name: AppPages.home }" :class="$style.headerLogo">
                     <img src="/images/svg/logo/logo.svg" alt="logo" />
                 </router-link>
                 <div :class="$style.headerMenu">

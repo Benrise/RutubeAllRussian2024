@@ -20,6 +20,7 @@ import { ProjectCard } from '@/5_entities/project/ui/card';
     gap: 16px;
     width: 100%;
     max-width: 534px;
+    
     ::-webkit-scrollbar {
         display: none;
     }
