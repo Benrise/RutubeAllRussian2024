@@ -55,23 +55,22 @@ const menuItems: menuItem[] = [
 
 <style lang="scss" module>
 .header {
-    background-color: white;
+    background-color: hsl(var(--muted));
     height: fit-content;
 }
 .headerContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding-top: 24px;
+    padding-bottom: 24px;
     gap: 24px;
 }
 .headerLeft,
-.headerCenter,
 .headerRight {
     display: flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 36px;
     align-items: center;
 }
 .headerLogo {
@@ -81,7 +80,7 @@ const menuItems: menuItem[] = [
     align-items: center;
 
     img {
-        max-height: 48px;
+        max-height: 40px;
     }
 }
 .headerMenu {
@@ -89,6 +88,7 @@ const menuItems: menuItem[] = [
     flex-direction: row;
     align-items: center;
     gap: 16px;
+    padding-top: 10px;
 }
 .headerMenuLink {
     font-size: 16px;
