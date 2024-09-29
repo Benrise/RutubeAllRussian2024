@@ -47,7 +47,7 @@
                 <div :class="$style.mainClip">
                     <div :class="$style.mainClipBody">
                         <div :class="$style.clipWrapper">
-                            <video ref="videoRef" :class="$style.clip" :src="selectedClip.src" controls/>
+                            <video ref="videoRef" controlslist="nodownload nofullscreen noplaybackrate" :class="$style.clip" :src="selectedClip.src" controls disabl/>
                             <div :class="$style.viralInfo">
                                 <TooltipProvider>
                                     <Tooltip>
@@ -62,6 +62,9 @@
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
+                            </div>
+                            <div v-if="getActiveSentence" :class="$style.activeSubtitle">
+                                <Badge class="bg-black" variant="secondary">{{ getActiveSentence.description }}</Badge>
                             </div>
                         </div>
                     </div>
@@ -95,7 +98,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, type Ref } from 'vue';
+import { computed, ref, watch, type Ref } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
 import { AppPages } from '@/1_app/router';
@@ -342,6 +345,8 @@ const localClips = ref(mockProject.clips.map(clip => ({
 })));
 const selectedClip = ref(mockProject.clips[0]);
 
+const getActiveSentence = computed(() => localClips.value[selectedClipIndex.value].transcript.find(sentence => sentence.isActive));
+
 const selectClip = (clip, index: number) => {
     selectedClipIndex.value = index;
 };
@@ -355,6 +360,7 @@ const onSentenceClick = (sentence) => {
         }
     }
 };
+
 const setSentenceRef = (el: any, index: number) => {
     if (el && localClips.value[selectedClipIndex.value].transcript[index]) {
         onClickOutside(el, () => {
@@ -369,7 +375,7 @@ const handleTimeUpdate = () => {
     const currentTime = videoRef.value?.currentTime || 0;
 
     localClips.value[selectedClipIndex.value].transcript.forEach((sentence) => {
-        if (currentTime < sentence.start_time || currentTime > sentence.end_time) {
+        if (currentTime < sentence.start_time) {
             sentence.isActive = false;
         } else {
             if (previousHighlightedSentence.value !== sentence) {
@@ -502,5 +508,18 @@ getProjectData()
 }
 .active {
     color: hsl(var(--primary));
+}
+.activeSubtitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+video::-webkit-media-controls-fullscreen-button {
+    display: none;
 }
 </style>
