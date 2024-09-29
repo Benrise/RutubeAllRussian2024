@@ -1,5 +1,5 @@
 <template>
-    <Dialog class="update-avatar">
+    <Dialog v-model:open="modelValue" class="upload-file">
       <DialogTrigger as-child>
         <slot/>
       </DialogTrigger>
@@ -10,8 +10,8 @@
             Поддерживаемые форматы: mp4, webm or avi. Максимальный размер: 2 ГБ
           </DialogDescription>
         </DialogHeader>
-        <label for="avatar" class="update-avatar__upload upload">
-          <Input @change="onFileChange($event)" accept=".mp4,.webm,.avi" id="avatar" type="file"/>
+        <label for="file" class="upload-file__upload upload">
+          <Input @change="onFileChange($event)" accept=".mp4,.webm,.avi" id="file" type="file"/>
           <div class="upload__area">
             <img src="/images/png/folder.png" class="upload__icon"/>
             <div class="upload__body">
@@ -20,11 +20,11 @@
             </div>
           </div>
         </label>
-        <div class="upload__link">
-          <div class="upload__link-title">Загрузка видео по ссылке</div>
+        <div v-if="!uploadedFile" class="upload__link">
+          <div class="upload__link-title">Загрузка видео по ссылке (Rutube)</div>
           <div class="flex gap-2 items-center">
-            <Input placeholder="Ссылка на видео" id="linkUpload"/>
-            <Button variant="default">Далее</Button>
+            <Input v-model:model-value="enteredLink" placeholder="Ссылка на видео" id="linkUpload"/>
+            <Button :loading="isLoading" @click="sendLink" variant="default">Далее</Button>
           </div>
         </div>
         <transition name="fade" mode="out-in">
@@ -63,9 +63,7 @@
   
   import { Button } from '@/6_shared/ui/button';
   import { Separator } from '@/6_shared/ui/separator';
-  
-  import IconPencil from '~icons/heroicons/pencil';
-  import IconCloud from '~icons/heroicons/cloud-arrow-up-solid';
+
   import IconXmark from '~icons/heroicons/x-mark-20-solid';
   
   import {
@@ -77,63 +75,54 @@
     DialogTrigger,
   } from '@/6_shared/ui/dialog'
   
-  import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from '@/6_shared/ui/alert-dialog'
-  
   import { Input } from '@/6_shared/ui/input';
   
   const { toast } = useToast();
   
   defineProps({
-    avatarSrc: {
-      type: String,
-      required: true,
-    },
     isLoading: {
       type: Boolean,
       required: true,
     },
   });
 
-  const emit = defineEmits(['update-avatar', 'remove-avatar']);
+  const emit = defineEmits(['upload-file', 'upload-file-link']);
+  const modelValue = defineModel<boolean>();
   
   const uploadedFile = ref<File>();
-  
+  const enteredLink = ref('');
+
   const clearFile = (e: Event) => {
     uploadedFile.value = undefined;
     e.preventDefault();
   };
   
-  const onFileChange = (e: any) => {
-    const maxFileSizeInMB = 2;
-    const maxFileSizeInKB = 1024 * 1024 * maxFileSizeInMB;
-  
-    const file = e.target.files[0]
-  
-    if (file.size > maxFileSizeInKB) {
+const onFileChange = (e: any) => {
+    const maxFileSizeInGB = 2;
+    const maxFileSizeInBytes = 1024 * 1024 * 1024 * maxFileSizeInGB;
+
+    const file = e.target.files[0];
+
+    if (file.size > maxFileSizeInBytes) {
         toast({
             variant: 'destructive',
             title: `Превышен максимальный размер файла`,
-            description: `Файл ${file.name} не загружен. Максимальный размер - ${maxFileSizeInMB} МБ.`,
+            description: `Файл ${file.name} не загружен. Максимальный размер - ${maxFileSizeInGB} ГБ.`,
         });
-        return
+        return;
     }
-  
+
     uploadedFile.value = file;
-  };
+};
   
   const uploadFile = () => {
     if (uploadedFile.value) {
-      emit('update-avatar', uploadedFile.value);
+      emit('upload-file', uploadedFile.value);
+    }
+  };
+  const sendLink = () => {
+    if (enteredLink.value) {
+      emit('upload-file-link', enteredLink.value); 
     }
   };
   
@@ -144,10 +133,6 @@
     }
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
-  }
-  
-  const removeAvatar = () => {
-    emit('remove-avatar');
   }
   </script>
   

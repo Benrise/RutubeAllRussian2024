@@ -38,7 +38,12 @@
                     </div>
                 </div>
                 <div :class="$style.mainActions">
-                    <Upload>
+                    <Upload 
+                            v-model:model-value="uploadDrawer" 
+                            :is-loading="isLoading.create" 
+                            @upload-file-link="(url: string) => uploadFileByUrl(url)" 
+                            @upload-file="(f: File) => uploadFile(f)"
+                     >
                         <Button variant="default"> Загрузить файл </Button>
                     </Upload>
                     <a href="#" :class="$style.helpLink">Как это работает?</a>
@@ -56,6 +61,30 @@ import IconArrow from '~icons/lets-icons/arrow-right-long-light?width=48px&heigh
 import { RecentList } from '@/3_widgets/recent/ui/list';
 import { Button } from '@/6_shared/ui/button';
 import { Upload } from '@/4_features/upload';
+import { computed, ref } from 'vue';
+import { useProjectStore } from '@/5_entities/project/model';
+
+const projectStore = useProjectStore();
+
+const isLoading = computed(() => {
+    return projectStore.isLoading
+})
+
+const uploadDrawer = ref(false);
+
+const uploadFile = async (file: File) => {
+    await projectStore.uploadFile(file, afterSuccessUploading);
+}
+const uploadFileByUrl = async (url: string) => {
+    await projectStore.uploadFileByURL(url, afterSuccessUploading);
+}
+const afterSuccessUploading = () => {
+    closeUploadDrawer();
+}
+const closeUploadDrawer = () => {
+    uploadDrawer.value = false
+}
+
 </script>
 
 <style lang="scss" module>
