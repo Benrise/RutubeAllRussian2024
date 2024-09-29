@@ -37,7 +37,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/6_shared/ui/avatar'
     height: 100%;
     padding: 32px;
     background: hsl(var(--muted));
-    height: 800px;
+    height: 600px;
     align-items: center;
     justify-content: center;
     border-radius: 24px;
@@ -62,7 +62,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/6_shared/ui/avatar'
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 66px;
+    max-width: 36px;
 
     img {
         width: 100%;

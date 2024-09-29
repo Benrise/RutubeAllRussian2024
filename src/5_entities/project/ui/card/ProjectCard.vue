@@ -16,17 +16,13 @@
                         2024-09-27 22.05.18
                     </div>
                 </div>
-                <Badge class="bg-orange-700" v-if="variant === 'default'">
-                    Средний рейтинг виральности: 10
-                </Badge>
-                <Badge v-if="variant === 'default'">
-                    10 клипов
-                </Badge>
-                <div :class="$style.cardActions">
-                    <Button variant="secondary">
-                        Подробнее
-                        <IconChevronRight class="ml-2"/>
-                    </Button>
+                <div class="flex flex-col gap-4 items-start">
+                    <Badge class="bg-purple-700 hover:bg-purple-800" v-if="variant === 'default'">
+                        Средний рейтинг виральности: 10
+                    </Badge>
+                    <Badge variant="secondary" v-if="variant === 'default'">
+                        10 клипов
+                    </Badge>
                 </div>
             </div>
         </div>
@@ -34,11 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/6_shared/ui/button';
 import { AppPages } from '@/1_app/router';
 import type { PropType } from 'vue';
 import Badge from '@/6_shared/ui/badge/Badge.vue';
-import IconChevronRight from '~icons/tabler/chevron-right?width=24px&height=24px';
 
 defineProps({
     variant: {
@@ -56,8 +50,11 @@ defineProps({
     width: 100%;
     background-color: hsl(var(--muted));
     border-radius: 8px;
-    min-height: 152px;
     overflow: hidden;
+
+    &:hover {
+        opacity: 0.9;
+    }
 }
 .card.default {
     flex-direction: column;

@@ -19,7 +19,10 @@
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <Button class="w-fit" variant="outline">Экспорт</Button>
+                <Button class="w-fit" variant="outline">
+                    Экспорт
+                    <IconExport class="ml-2"/>
+                </Button>
             </div>
             <div :class="$style.main">
                 <div :class="$style.mainTranscript">
@@ -52,12 +55,12 @@
                                 <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger>
-                                        <Badge :class="$style.viralBadge">
-                                            {{ selectedClip.score }}
-                                            <IconInfo/>
+                                        <Badge class="bg-purple-600 hover:bg-purple-700" :class="$style.viralBadge">
+                                            {{ selectedClip.score }} 
+                                            <IconLightning/>
                                         </Badge>
                                       </TooltipTrigger>
-                                      <TooltipContent>
+                                      <TooltipContent class="bg-purple-700">
                                         {{ selectedClip.score_description }}
                                       </TooltipContent>
                                     </Tooltip>
@@ -81,16 +84,18 @@
                     <div :class="$style.mainTitle">
                         Сгенерированные клипы
                     </div>
-                    <div :class="$style.mainClipsList">
-                        <ClipCard 
-                            v-for="(clip, index) in localClips" 
-                            :key="clip.id"
-                            :clip="clip"
-                            :index="index + 1"
-                            @click="selectClip(clip, index)"
-                            :is-active="selectedClip.id === clip.id"
-                        />
-                    </div>
+                    <ScrollArea>
+                        <div :class="$style.list">
+                            <ClipCard 
+                                v-for="(clip, index) in localClips" 
+                                :key="clip.id"
+                                :clip="clip"
+                                :index="index + 1"
+                                @click="selectClip(clip, index)"
+                                :is-active="selectedClip.id === clip.id"
+                            />
+                        </div>
+                    </ScrollArea>
                 </div>
             </div>
         </div>
@@ -98,16 +103,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, type Ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
 import { AppPages } from '@/1_app/router';
 
 import { Button } from '@/6_shared/ui/button';
 import { Badge } from '@/6_shared/ui/badge';
-import Input from '@/6_shared/ui/input/Input.vue';
-
-import PageBuilder from '@/6_shared/ui/page-builder/PageBuilder.vue';
+import { Input } from '@/6_shared/ui/input';
+import { PageBuilder } from '@/6_shared/ui/page-builder';
+import { ScrollArea } from '@/6_shared/ui/scroll-area';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -115,7 +120,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/6_shared/ui/breadcrumb';
-
 import {
   Tooltip,
   TooltipContent,
@@ -129,7 +133,8 @@ import { getProjectData } from '@/5_entities/project/api/data';
 import IconSlash from '~icons/lucide/slash?width=48px&height=48px';
 import IconDislike from '~icons/heroicons/hand-thumb-down';
 import IconLike from '~icons/heroicons/hand-thumb-up';
-import IconInfo from '~icons/lucide/info?width=16px&height=16px';
+import IconLightning from '~icons/heroicons-outline/lightning-bolt?width=16px&height=16px';
+import IconExport from '~icons/uil/export?width=16px&height=16px';
 
 const mockProject  = {
     id: 1,
@@ -446,15 +451,14 @@ getProjectData()
     height: 100%;
     width: 520px;
     max-width: 540px;
-    max-height: 100vh;
+    max-height: 100%;
 
     ::-webkit-scrollbar {
         display: none;
     }
 }
-.mainClipsList {
-    max-height: 100vh;
-    overflow-y: scroll;
+.list {
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -482,8 +486,7 @@ getProjectData()
 .viralBadge {
     display: flex;
     gap: 4px;
-    align-items: center;
-    background: hsl(var(--primary));
+    align-items: center; 
     font-size: 14px;
     padding: 8px 12px;
     color: hsl(var(--white));

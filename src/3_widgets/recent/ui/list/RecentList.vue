@@ -1,15 +1,18 @@
 <template>
     <div :class="$style.recent">
         <div :class="$style.recentHeader">
-            Недавние проекты
+            Рабочие пространства
         </div>
-        <div :class="$style.recentList">
-            <ProjectCard :variant="'recent'" v-for="i in 20" :key="i"/>
-        </div>
+        <ScrollArea>
+            <div :class="$style.list">
+                <ProjectCard :variant="'recent'" v-for="i in 20" :key="i"/>
+            </div>
+        </ScrollArea>
     </div>
 </template>
 
 <script setup lang="ts">
+import { ScrollArea } from '@/6_shared/ui/scroll-area'
 import { ProjectCard } from '@/5_entities/project/ui/card';
 </script>
 
@@ -28,9 +31,8 @@ import { ProjectCard } from '@/5_entities/project/ui/card';
 .recentHeader {
     @include h2();
 }
-.recentList {
-    max-height: 100vh;
-    overflow-y: scroll;
+.list {
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 16px;
