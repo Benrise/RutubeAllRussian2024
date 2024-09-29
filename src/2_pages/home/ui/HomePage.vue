@@ -39,10 +39,10 @@
                 </div>
                 <div :class="$style.mainActions">
                     <Upload 
-                            v-model:model-value="uploadDrawer" 
-                            :is-loading="isLoading.create" 
-                            @upload-file-link="(url: string) => uploadFileByUrl(url)" 
-                            @upload-file="(f: File) => uploadFile(f)"
+                        v-model:model-value="uploadDrawer" 
+                        :is-loading="isLoading.create" 
+                        @upload-file-link="(url: string) => uploadFileByUrl(url)" 
+                        @upload-file="(f: File) => uploadFile(f)"
                      >
                         <Button variant="default"> Загрузить файл </Button>
                     </Upload>
@@ -63,6 +63,7 @@ import { Button } from '@/6_shared/ui/button';
 import { Upload } from '@/4_features/upload';
 import { computed, ref } from 'vue';
 import { useProjectStore } from '@/5_entities/project/model';
+import { AppPages, router } from '@/1_app/router';
 
 const projectStore = useProjectStore();
 
@@ -80,6 +81,7 @@ const uploadFileByUrl = async (url: string) => {
 }
 const afterSuccessUploading = () => {
     closeUploadDrawer();
+    router.push({ name: AppPages.project, params: { projectId: 1 } });
 }
 const closeUploadDrawer = () => {
     uploadDrawer.value = false

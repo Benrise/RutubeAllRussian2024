@@ -128,7 +128,6 @@ import {
 } from '@/6_shared/ui/tooltip';
 
 import { ClipCard } from '@/5_entities/clip/ui/card';
-import { getProjectData } from '@/5_entities/project/api/data';
 
 import IconSlash from '~icons/lucide/slash?width=48px&height=48px';
 import IconDislike from '~icons/heroicons/hand-thumb-down';
@@ -406,8 +405,6 @@ watch(videoRef, (newVideoRef) => {
         newVideoRef.addEventListener('timeupdate', handleTimeUpdate);
     }
 });
-
-getProjectData()
 </script>
 
 <style lang="scss" module>
